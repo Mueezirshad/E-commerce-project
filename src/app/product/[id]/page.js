@@ -19,7 +19,7 @@ export default function ProductDetails() {
     return null;
   }); 
 
-  const [darkMode, setDarkMode] = useState(() => {
+  const [darkMode] = useState(() => {
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("darkMode");
       return savedTheme !== null ? savedTheme === "true" : true;
@@ -29,36 +29,37 @@ export default function ProductDetails() {
 
   useEffect(() => {
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
-    }
-
-    if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem("darkMode");
-      if (savedTheme === null) {
-        localStorage.setItem("darkMode", "true");
-      }
+      document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
 
   useEffect(() => {
-    if (params?.id) {
-      axios
-        .get(`https://backend-my-api-ten.vercel.app/products`)
-        .then((response) => {
-          const foundProduct = response.data.products.find(
-            (p) => p.id === parseInt(params.id)
-          );
-          setProduct(foundProduct);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching product details:", err);
-          setLoading(false);
-        });
-    }
+    if (!params?.id) return;
+
+    axios
+      .get("https://backend-my-api-ten.vercel.app/api/products")
+      .then((response) => {
+        const foundProduct = (response.data.products || []).find(
+          (p) => p._id === params.id
+        );
+        setProduct(foundProduct || null);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching product details:", err);
+        setLoading(false);
+      });
   }, [params?.id]);
+
+  const formatWhatsAppNumber = (phone) => {
+    if (!phone) return null;
+    const digits = phone.replace(/\D/g, "");
+    if (digits.startsWith("92")) return digits;
+    if (digits.startsWith("0")) return `92${digits.slice(1)}`;
+    return digits;
+  };
 
   const handleWhatsAppClick = () => {
     if (!user) {
@@ -73,8 +74,20 @@ export default function ProductDetails() {
     return;
     }
 
-    const phoneNumber = "923001234567";
-    const message = `Salam, I am interested in buying your product: *${product?.title}* listed for *$${product?.price}*. Is it still available?`;
+    const phoneNumber = formatWhatsAppNumber(product?.phone);
+    if (!phoneNumber) {
+      Swal.fire({
+        title: "⚠️ No Contact Number!",
+        text: "This seller has not provided a phone number.",
+        icon: "warning",
+        background: "#1e293b",
+        color: "#fff",
+        confirmButtonColor: "#9333ea",
+      });
+      return;
+    }
+
+    const message = `Salam, I am interested in buying your product: *${product?.title}* listed for *Rs. ${product?.price}*. Is it still available?`;
 
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
@@ -161,12 +174,12 @@ export default function ProductDetails() {
 
         <div className={`border rounded-2xl p-6 flex items-center justify-center h-[400px] shadow-sm relative overflow-hidden transition-colors duration-300 ${darkMode ? "bg-slate-800 border-slate-700/60" : "bg-white border-purple-200/50"}`}>
           <Image
-            src={product.thumbnail}
+            src={product.thumbnail || "/logo.svg"}
             alt={product.title}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
-            unoptimized={true} 
+            unoptimized={true}
             className="p-4 object-contain rounded-xl transform hover:scale-105 transition-transform duration-300"
           />
         </div>
@@ -177,12 +190,14 @@ export default function ProductDetails() {
             <span className="text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400">
               {product.category}
             </span>
-            <span className="text-amber-500 font-bold text-sm">★ {product.rating}</span>
+            {product.rating != null && (
+              <span className="text-amber-500 font-bold text-sm">★ {product.rating}</span>
+            )}
           </div>
 
           <h1 className="text-3xl font-extrabold mb-2 tracking-tight">{product.title}</h1>
           <p className={`text-3xl font-black mb-6 ${darkMode ? "text-purple-300" : "text-purple-900"}`}>
-            ${product.price}
+            Rs. {product.price}
           </p>
 
           <hr className={`my-4 opacity-10 ${darkMode ? "bg-white" : "bg-black"}`} />
