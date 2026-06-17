@@ -47,23 +47,14 @@ export default function LoginRegisterModal({
       const response = await axios.post("https://backend-my-api-ten.vercel.app/api/auth/register", formData);
 
       if (response.data) {
-        const registeredUser = response.data.user;
-        if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-        }
-        if (registeredUser) {
-          localStorage.setItem("loggedInUser", JSON.stringify(registeredUser));
-          setUser(registeredUser);
-        }
-
         Swal.fire({
           title: '🎉 Account Created!',
-          text: `Welcome, ${registeredUser?.name || "User"}! Ab aap product sell kar sakte hain.`,
+          text: 'Account ban gaya! Ab apna email aur password se login karein.',
           icon: 'success',
-          background: '#1e293b', color: '#fff', confirmButtonColor: '#9333ea', 
+          background: '#1e293b', color: '#fff', confirmButtonColor: '#9333ea',
           timer: 3000, timerProgressBar: true
         });
-        setShowLogin(false);
+
         setisSignup(false);
         setForm({ name: "", email: form.email, password: "", profilePic: null, file: null });
       }

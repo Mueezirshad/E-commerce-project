@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 
 import SellProductModal from "./components/sellProducts";
 import LoginRegisterModal from "./components/loginRegister";
+import Footer from "./components/Footer";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -123,7 +124,7 @@ export default function Home() {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "bg-slate-900 text-slate-100" : "bg-gray-50 text-slate-800"}`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? "bg-slate-900 text-slate-100" : "bg-gray-50 text-slate-800"}`}>
 
       {/* NAVBAR HEADER */}
       <header className={`border-b sticky top-0 z-50 shadow-sm px-4 py-3 transition-colors duration-300 ${darkMode ? "bg-slate-900/90 border-slate-800 backdrop-blur" : "bg-purple-50/95 border-purple-200 backdrop-blur"}`}>
@@ -270,6 +271,8 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      <Footer darkMode={darkMode} />
 
       {/* 👑 CALLING EXTERNAL DB MODALS PROPERLY */}
       <LoginRegisterModal 

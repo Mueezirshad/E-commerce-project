@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Image from 'next/image';
 import Swal from 'sweetalert2';
+import Footer from "../../components/Footer";
 
 export default function ProductDetails() {
   const params = useParams();
@@ -137,7 +138,7 @@ export default function ProductDetails() {
   }
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "bg-slate-900 text-slate-100" : "bg-purple-50/30 text-slate-800"}`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? "bg-slate-900 text-slate-100" : "bg-purple-50/30 text-slate-800"}`}>
 
       {/* MINI PREMIUM HEADER */}
       <nav className={`border-b px-6 py-4 flex justify-between items-center transition-colors duration-300 ${darkMode ? "bg-slate-900/90 border-slate-800 backdrop-blur" : "bg-purple-50/95 border-purple-200 backdrop-blur"}`}>
@@ -257,6 +258,8 @@ export default function ProductDetails() {
 
         </div>
       </main>
+
+      <Footer darkMode={darkMode} />
     </div>
   );
 }
