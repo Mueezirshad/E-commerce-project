@@ -42,23 +42,29 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
       });
     }
 
-    setUploading(true);
     const token = localStorage.getItem("token");
+    if (!token) {
+      return Swal.fire({
+        title: "🔒 Login Required!",
+        text: "Product add karne ke liye pehle login karein.",
+        icon: "warning",
+        background: "#1e293b", color: "#fff", confirmButtonColor: "#eab308"
+      });
+    }
+
+    setUploading(true);
 
     const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("category", category);
-    formData.append("phone", phone);
-    formData.append("thumbnail", file); // Backend controller k file key se match karein
+    formData.append("title", title.trim());
+    formData.append("description", description.trim());
+    formData.append("price", String(price));
+    formData.append("category", category.trim());
+    formData.append("phoneNumber", phone.trim());
+    formData.append("productImage", file);
 
     try {
-      const response = await axios.post("https://backend-my-api-ten.vercel.app/api/products", formData, {
-        headers: { 
-          "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${token}` // JWT Auth token validation k liye
-        },
+      const response = await axios.post("https://backend-my-api-ten.vercel.app/api/products/add", formData, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.data) {
@@ -69,7 +75,6 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
           background: "#1e293b", color: "#fff", confirmButtonColor: "#22c55e"
         });
         
-        // Frontend products state ko live update karna bina full page reload k
         if (response.data.product) {
           setProducts((prev) => [response.data.product, ...prev]);
         }

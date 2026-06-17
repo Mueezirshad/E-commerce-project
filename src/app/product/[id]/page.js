@@ -74,7 +74,7 @@ export default function ProductDetails() {
     return;
     }
 
-    const phoneNumber = formatWhatsAppNumber(product?.phone);
+    const phoneNumber = formatWhatsAppNumber(product?.phoneNumber || product?.phone);
     if (!phoneNumber) {
       Swal.fire({
         title: "⚠️ No Contact Number!",
@@ -218,7 +218,13 @@ export default function ProductDetails() {
             </button>
 
             <button
-              onClick={() => handleActionClick("Sell")}
+              onClick={() => {
+                if (!user) {
+                  handleActionClick("Sell");
+                  return;
+                }
+                router.push("/?sell=1");
+              }}
               className={`w-full py-3.5 rounded-xl font-bold tracking-wide transition-all text-sm border ${user
                   ? "border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-500/10 active:scale-[0.99]"
                   : "border-slate-700 text-gray-600 cursor-not-allowed"

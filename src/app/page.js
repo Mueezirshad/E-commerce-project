@@ -80,6 +80,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("sell") === "1" && user) {
+      setShowSellModal(true);
+      window.history.replaceState({}, "", "/");
+    }
+  }, [user]);
+
+  useEffect(() => {
     function handleClickOutside(event) {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
         setShowProfileMenu(false);
@@ -250,7 +258,9 @@ export default function Home() {
                       </div>
                       <div className="mt-4 pt-2 border-t border-gray-100/10 flex justify-between items-center text-[11px] text-gray-400 uppercase tracking-wider font-semibold">
                         <span>{product.category}</span>
-                        {product.phone && <span className="text-purple-400 font-bold">📞 {product.phone}</span>}
+                        {(product.phoneNumber || product.phone) && (
+                          <span className="text-purple-400 font-bold">📞 {product.phoneNumber || product.phone}</span>
+                        )}
                       </div>
                     </div>
                   </div>
