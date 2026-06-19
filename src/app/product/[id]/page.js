@@ -102,7 +102,7 @@ export default function ProductDetails() {
       icon: 'error',
       background: '#1e293b',
       color: '#fff',
-      confirmButtonColor: '#ef4444', // Red button for error
+      confirmButtonColor: '#ef4444', 
     });
     return;
   }
@@ -113,8 +113,8 @@ export default function ProductDetails() {
     icon: 'success',
     background: '#1e293b',
     color: '#fff',
-    confirmButtonColor: '#22c55e', // Green button for success
-    timer: 2500, // 2.5 seconds baad khud gayab ho jayega
+    confirmButtonColor: '#22c55e', 
+    timer: 2500, 
     timerProgressBar: true
   });
 };
@@ -140,11 +140,9 @@ export default function ProductDetails() {
   return (
     <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? "bg-slate-900 text-slate-100" : "bg-purple-50/30 text-slate-800"}`}>
 
-      {/* MINI PREMIUM HEADER */}
       <nav className={`border-b px-6 py-4 flex justify-between items-center transition-colors duration-300 ${darkMode ? "bg-slate-900/90 border-slate-800 backdrop-blur" : "bg-purple-50/95 border-purple-200 backdrop-blur"}`}>
         <div className="flex justify-between items-center gap-10">
           
-          {/* ⬅️ Back Arrow */}
           <div 
             onClick={() => router.push("/")} 
             className={`text-2xl font-black tracking-wider cursor-pointer z-40 relative px-2 py-1 select-none ${darkMode ? "text-purple-400 hover:text-purple-300" : "text-purple-900 hover:text-purple-700"}`}
@@ -152,7 +150,6 @@ export default function ProductDetails() {
             ←
           </div>
 
-          {/* 🏷️ Logo Container */}
           <div className="relative h-14 w-60 md:h-20 md:w-72 -my-3 -ml-2 md:-ml-20 overflow-visible pointer-events-none">
             <Image
               src="/logo.svg"
@@ -170,7 +167,6 @@ export default function ProductDetails() {
         </div>
       </nav>
 
-      {/* MAIN CONTENT GRID */}
       <main className="max-w-6xl mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
         <div className={`border rounded-2xl p-6 flex items-center justify-center h-[400px] shadow-sm relative overflow-hidden transition-colors duration-300 ${darkMode ? "bg-slate-800 border-slate-700/60" : "bg-white border-purple-200/50"}`}>

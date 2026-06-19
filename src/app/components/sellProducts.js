@@ -36,7 +36,7 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
     if (!title.trim() || !description.trim() || !price || !category.trim() || !phone.trim() || !file) {
       return Swal.fire({
         title: "⚠️ Fields Required!",
-        text: "Bhai, Image samait saari details bharna zaroori hai!",
+        text: "Please make sure to fill in all the required details, including the image",
         icon: "warning",
         background: "#1e293b", color: "#fff", confirmButtonColor: "#eab308"
       });
@@ -46,7 +46,7 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
     if (!token) {
       return Swal.fire({
         title: "🔒 Login Required!",
-        text: "Product add karne ke liye pehle login karein.",
+        text: "Please sign in to add a product.",
         icon: "warning",
         background: "#1e293b", color: "#fff", confirmButtonColor: "#eab308"
       });
@@ -69,8 +69,8 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
 
       if (response.data) {
         Swal.fire({
-          title: "🎉 Product Listed!",
-          text: "Aapka item kamyabi se MongoDB Database me add hogya h!",
+          title: "🎉 Succes!",
+          text: "Product added successfully",
           icon: "success",
           background: "#1e293b", color: "#fff", confirmButtonColor: "#22c55e"
         });
@@ -127,7 +127,7 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider mb-1 text-gray-400">Product Title</label>
             <input
-              type="text" placeholder="e.g., iPhone 14 Pro Max"
+              type="text" placeholder=" iPhone 14 Pro Max"
               value={productForm.title} onChange={(e) => setProductForm({ ...productForm, title: e.target.value })}
               className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 ${darkMode ? "bg-slate-700 border-slate-600 text-white" : "bg-gray-50 border-gray-300"}`}
             />
@@ -145,7 +145,7 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider mb-1 text-gray-400">Category</label>
               <input
-                type="text" placeholder="e.g., Mobiles, Cars"
+                type="text" placeholder="Mobiles, Cars"
                 value={productForm.category} onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
                 className={`w-full border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 ${darkMode ? "bg-slate-700 border-slate-600 text-white" : "bg-gray-50 border-gray-300"}`}
               />
@@ -174,7 +174,7 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
             type="submit" disabled={uploading}
             className={`w-full text-white py-3 rounded-xl font-bold transition-all text-sm mt-1 shadow-md hover:opacity-90 flex justify-center items-center gap-2 ${darkMode ? "bg-purple-600" : "bg-purple-900"} ${uploading && "opacity-60 cursor-not-allowed"}`}
           >
-            {uploading ? "Uploading to Cloudinary & DB..." : "Submit Product 🚀"}
+            {uploading ? "Uploading...." : "Submit Product 🚀"}
           </button>
         </form>
 

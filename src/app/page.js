@@ -205,7 +205,7 @@ export default function Home() {
                 if (!user) {
                   Swal.fire({
                     title: '⚠️ Authentication Required!',
-                    text: 'Bhai, naya item bechne se pehle Login karna lazmi hai!',
+                    text: 'Please log in before selling a new item.',
                     icon: 'warning',
                     background: '#1e293b', color: '#fff', confirmButtonColor: '#eab308'
                   }).then(() => {

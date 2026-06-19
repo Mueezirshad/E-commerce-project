@@ -31,7 +31,7 @@ export default function LoginRegisterModal({
     if (!form.name.trim() || !form.email.trim() || !form.password.trim()) {
       return Swal.fire({
         title: '⚠️ Fields Required!',
-        text: 'Bhai, saari fields bharna zaroori hai!',
+        text: 'All fields are required!',
         icon: 'warning',
         background: '#1e293b', color: '#fff', confirmButtonColor: '#eab308' 
       });
@@ -49,7 +49,7 @@ export default function LoginRegisterModal({
       if (response.data) {
         Swal.fire({
           title: '🎉 Account Created!',
-          text: 'Account ban gaya! Ab apna email aur password se login karein.',
+          text: 'Account created! Now log in with your email and password.',
           icon: 'success',
           background: '#1e293b', color: '#fff', confirmButtonColor: '#9333ea',
           timer: 3000, timerProgressBar: true
@@ -147,7 +147,7 @@ export default function LoginRegisterModal({
               <label className="block text-xs font-bold uppercase tracking-wider mb-1 text-gray-400">Full Name</label>
               <input
                 type="text"
-                placeholder="John Doe"
+                placeholder="Enter your name"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className={`w-full border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm ${darkMode ? "bg-slate-700 border-slate-600 text-white" : "bg-gray-50 border-gray-300"}`}
