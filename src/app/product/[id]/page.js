@@ -167,9 +167,9 @@ export default function ProductDetails() {
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      <main className="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 items-start">
 
-        <div className={`border rounded-2xl p-6 flex items-center justify-center h-[400px] shadow-sm relative overflow-hidden transition-colors duration-300 ${darkMode ? "bg-slate-800 border-slate-700/60" : "bg-white border-purple-200/50"}`}>
+        <div className={`border rounded-3xl p-5 flex items-center justify-center min-h-[320px] md:h-[420px] shadow-sm relative overflow-hidden transition-colors duration-300 ${darkMode ? "bg-slate-800 border-slate-700/60" : "bg-white border-purple-200/50"}`}>
           <Image
             src={product.thumbnail || "/logo.svg"}
             alt={product.title}
@@ -177,7 +177,7 @@ export default function ProductDetails() {
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
             unoptimized={true}
-            className="p-4 object-contain rounded-xl transform hover:scale-105 transition-transform duration-300"
+            className="p-4 object-contain rounded-2xl transform hover:scale-105 transition-transform duration-300"
           />
         </div>
 
@@ -201,6 +201,26 @@ export default function ProductDetails() {
 
           <h3 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Description</h3>
           <p className="text-sm leading-relaxed mb-6 opacity-80">{product.description}</p>
+
+          <div className={`rounded-3xl p-5 mb-6 border ${darkMode ? "border-slate-700 bg-slate-900/80" : "border-purple-200 bg-purple-50/80"}`}>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Seller Info</h2>
+            <div className="grid gap-3 text-sm">
+              <div className="flex justify-between items-center">
+                <span className="opacity-80">Seller</span>
+                <span className="font-semibold">{product.seller || "VanishMart Seller"}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="opacity-80">Contact</span>
+                <span className="font-semibold">{product.phoneNumber || product.phone || "Not provided"}</span>
+              </div>
+              {product.location && (
+                <div className="flex justify-between items-center">
+                  <span className="opacity-80">Location</span>
+                  <span className="font-semibold">{product.location}</span>
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="space-y-3.5">
 
@@ -241,7 +261,7 @@ export default function ProductDetails() {
               className={`w-full bg-[#25D366] text-white py-3.5 rounded-xl font-extrabold tracking-wide transition-all text-sm shadow-md shadow-[#25D366]/10 flex items-center justify-center gap-2 ${user ? "hover:bg-[#20ba5a] active:scale-[0.99]" : "opacity-50 cursor-not-allowed"
                 }`}
             >
-              <span>💬</span> {user ? "Chat with Seller on WhatsApp" : "🔒 Login to Chat on WhatsApp"}
+              <span>💬</span> {user ? "Chat with Seller" : "🔒 Login to Chat with Seller"}
             </button>
 
             {!user && (
