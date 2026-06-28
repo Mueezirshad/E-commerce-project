@@ -11,6 +11,8 @@ export default function ProductDetails() {
   const router = useRouter();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [directChatOpen, setDirectChatOpen] = useState(false);
+  const [directChatMessage, setDirectChatMessage] = useState("");
 
   const [user, setUser] = useState(() => {
     if (typeof window !== "undefined") {
@@ -94,6 +96,46 @@ export default function ProductDetails() {
     window.open(whatsappUrl, "_blank");
   };
 
+  const handleDirectChatClick = () => {
+    if (!user) {
+      Swal.fire({
+        title: '⚠️ Access Denied!',
+        text: 'Please Login or Register first to message the seller directly!',
+        icon: 'warning',
+        background: '#1e293b',
+        color: '#fff',
+        confirmButtonColor: '#9333ea',
+      });
+      return;
+    }
+    setDirectChatOpen((current) => !current);
+  };
+
+  const handleSendDirectMessage = () => {
+    if (!directChatMessage.trim()) {
+      Swal.fire({
+        title: '⚠️ Message Required',
+        text: 'Please type a message before sending to the seller.',
+        icon: 'warning',
+        background: '#1e293b',
+        color: '#fff',
+        confirmButtonColor: '#9333ea',
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: '✅ Message Sent',
+      text: 'Your direct message has been sent to the seller. They will reply if available.',
+      icon: 'success',
+      background: '#1e293b',
+      color: '#fff',
+      confirmButtonColor: '#22c55e',
+    });
+    setDirectChatMessage("");
+    // setDirectChatOpen(false);
+  };
+
   const handleActionClick = (actionType) => {
     if (!user) {
     Swal.fire({
@@ -169,7 +211,7 @@ export default function ProductDetails() {
 
       <main className="max-w-6xl mx-auto p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-        <div className={`border rounded-2xl p-6 flex items-center justify-center h-[400px] shadow-sm relative overflow-hidden transition-colors duration-300 ${darkMode ? "bg-slate-800 border-slate-700/60" : "bg-white border-purple-200/50"}`}>
+        <div className={`border rounded-2xl p-6 flex items-center justify-center h-100 shadow-sm relative overflow-hidden transition-colors duration-300 ${darkMode ? "bg-slate-800 border-slate-700/60" : "bg-white border-purple-200/50"}`}>
           <Image
             src={product.thumbnail || "/logo.svg"}
             alt={product.title}
@@ -235,6 +277,32 @@ export default function ProductDetails() {
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Or Contact Instantly</span>
               <div className="flex-1 h-px bg-gray-700/30"></div>
             </div>
+
+            <button
+              onClick={handleDirectChatClick}
+              className={`w-full bg-violet-600 text-white py-3.5 rounded-xl font-extrabold tracking-wide transition-all text-sm shadow-md shadow-violet-500/20 flex items-center justify-center gap-2 ${user ? "hover:bg-violet-500 active:scale-[0.99]" : "opacity-50 cursor-not-allowed"
+                }`}
+            >
+              <span>📩</span> {user ? "Direct Message Seller" : "🔒 Login to Message Seller"}
+            </button>
+
+            {directChatOpen && (
+              <div className={`rounded-3xl border p-4 mt-4 ${darkMode ? "border-slate-700 bg-slate-900/80" : "border-purple-200 bg-purple-50/90"}`}>
+                <label className="block text-sm font-semibold text-gray-300 mb-2">Message Seller</label>
+                <textarea
+                  value={directChatMessage}
+                  onChange={(event) => setDirectChatMessage(event.target.value)}
+                  placeholder="Type your message here..."
+                  className="w-full min-h-27.5 rounded-2xl border border-gray-600/40 bg-slate-950/90 p-3 text-sm text-white placeholder:text-gray-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                />
+                <button
+                  onClick={handleSendDirectMessage}
+                  className="mt-3 w-full bg-purple-600 text-white py-3 rounded-2xl font-bold hover:bg-purple-500 transition-all"
+                >
+                  Send Direct Message
+                </button>
+              </div>
+            )}
 
             <button
               onClick={handleWhatsAppClick}

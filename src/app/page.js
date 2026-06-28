@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import Image from 'next/image';
@@ -10,6 +11,7 @@ import LoginRegisterModal from "./components/loginRegister";
 import Footer from "./components/Footer";
 
 export default function Home() {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,8 +25,9 @@ export default function Home() {
       const savedTheme = localStorage.getItem("darkMode");
       return savedTheme !== null ? savedTheme === "true" : true;
     }
-    return true; 
+    return true;
   });
+
 
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null);
@@ -82,9 +85,13 @@ export default function Home() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+
     if (params.get("sell") === "1" && user) {
-      setShowSellModal(true);
       window.history.replaceState({}, "", "/");
+
+      setTimeout(() => {
+        setShowSellModal(true);
+      }, 0);
     }
   }, [user]);
 
@@ -170,7 +177,7 @@ export default function Home() {
                       {user.name?.charAt(0)}
                     </div>
                   )}
-                  <span className="text-xs font-bold hidden sm:inline-block max-w-[80px] truncate">{user.name}</span>
+                  <span className="text-xs font-bold hidden sm:inline-block max-w-20 truncate">{user.name}</span>
                 </div>
 
                 {showProfileMenu && (
@@ -215,7 +222,7 @@ export default function Home() {
                   setShowSellModal(true);
                 }
               }}
-              className="relative inline-flex items-center justify-center font-extrabold px-6 py-2 rounded-xl text-white bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 shadow-md text-xs uppercase tracking-wider group transform active:scale-95 transition-all"
+              className="relative inline-flex items-center justify-center font-extrabold px-6 py-2 rounded-xl text-white bg-linear-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 shadow-md text-xs uppercase tracking-wider group transform active:scale-95 transition-all"
             >
               <span className="mr-1.5 text-base font-black transform group-hover:rotate-90 transition-transform duration-200">+</span>
               Sell
@@ -227,9 +234,33 @@ export default function Home() {
       {/* MAIN PRODUCTS SECTIONS */}
       <main className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className={`text-2xl font-bold mb-6 ${darkMode ? "text-white" : "text-slate-800"}`}>
-            {searchQuery ? `Search results for "${searchQuery}"` : "Fresh recommendations"}
-          </h1>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className={`text-2xl font-bold mb-6 ${darkMode ? "text-white" : "text-slate-800"}`}>
+              {searchQuery ? `Search results for "${searchQuery}"` : "Fresh recommendations"}
+            </h1>
+            {/* boost ad button */}
+            <button
+              onClick={() => router.push("/boostpost")}
+              className={`
+    relative inline-flex items-center justify-center font-extrabold px-6 py-2 rounded-xl text-white 
+    bg-linear-to-r from-purple-600 via-indigo-600 to-purple-700 
+    hover:from-purple-500 hover:to-purple-600 
+    shadow-[0_0_15px_rgba(124,58,237,0.5)] hover:shadow-[0_0_25px_rgba(124,58,237,0.8)]
+    text-xs uppercase tracking-wider group transform active:scale-95 transition-all duration-300
+    animate-[premium-shake_4s_infinite_ease-in-out]
+  `}
+            >
+              {/* Premium Border Glow Effect */}
+              <span className="absolute inset-0 w-full h-full rounded-xl bg-linear-to-r from-purple-400 to-indigo-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></span>
+
+              <span className="relative flex items-center gap-1">🚀 Boost Your Ad
+                {/* {showOnlyMyAds ? "⬅ Show All Ads" : "🚀 Boost Your Ad"} */}
+              </span>
+            </button>
+
+
+          </div>
+
 
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12 text-gray-500 text-lg">No products found.</div>
@@ -239,7 +270,7 @@ export default function Home() {
                 <Link href={`/product/${product._id}`} key={product._id}>
                   <div className={`border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer h-full flex flex-col justify-between ${darkMode ? "bg-slate-800 border-slate-700/60" : "bg-white border-gray-200"}`}>
                     <div className={`w-full h-48 flex items-center justify-center p-2 relative ${darkMode ? "bg-slate-700/50" : "bg-purple-50/30"}`}>
-                      <div className="relative w-full h-full min-h-[150px]">
+                      <div className="relative w-full h-full min-h-37.5">
                         {/* 🌟 Database dynamic image rendering */}
                         <Image
                           src={product.thumbnail || "/logo.svg"}
@@ -251,17 +282,19 @@ export default function Home() {
                         />
                       </div>
                     </div>
-                    <div className="p-3 flex-grow flex flex-col justify-between">
+                    <div className="p-3 grow flex flex-col justify-between">
                       <div>
-                        <h2 className={`text-xl font-bold mb-1 ${darkMode ? "text-purple-300" : "text-slate-900"}`}>Rs. {product.price}</h2>
+                        <h2 className={`text-xl font-bold mb-1 ${darkMode ? "text-purple-400" : "text-slate-900"}`}>Rs. {product.price}</h2>
                         <p className={`text-sm line-clamp-1 font-medium ${darkMode ? "text-slate-200 hover:text-purple-400" : "text-gray-700 hover:text-purple-700"}`}>{product.title}</p>
                         <p className="text-xs text-gray-400 line-clamp-2 mt-1">{product.description}</p>
+
                       </div>
                       <div className="mt-4 pt-2 border-t border-gray-100/10 flex justify-between items-center text-[11px] text-gray-400 uppercase tracking-wider font-semibold">
                         <span>{product.category}</span>
                         {(product.phoneNumber || product.phone) && (
                           <span className="text-purple-400 font-bold">📞 {product.phoneNumber || product.phone}</span>
                         )}
+
                       </div>
                     </div>
                   </div>
@@ -275,15 +308,15 @@ export default function Home() {
       <Footer darkMode={darkMode} />
 
       {/* 👑 CALLING EXTERNAL DB MODALS PROPERLY */}
-      <LoginRegisterModal 
-        showLogin={showLogin} setShowLogin={setShowLogin} 
-        isSignup={isSignup} setisSignup={setisSignup} 
-        darkMode={darkMode} form={form} setForm={setForm} setUser={setUser} 
+      <LoginRegisterModal
+        showLogin={showLogin} setShowLogin={setShowLogin}
+        isSignup={isSignup} setisSignup={setisSignup}
+        darkMode={darkMode} form={form} setForm={setForm} setUser={setUser}
       />
 
-      <SellProductModal 
-        showSellModal={showSellModal} setShowSellModal={setShowSellModal} 
-        darkMode={darkMode} setProducts={setProducts} 
+      <SellProductModal
+        showSellModal={showSellModal} setShowSellModal={setShowSellModal}
+        darkMode={darkMode} setProducts={setProducts}
       />
 
     </div>

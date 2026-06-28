@@ -60,11 +60,13 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
     formData.append("price", String(price));
     formData.append("category", category.trim());
     formData.append("phoneNumber", phone.trim());
-    formData.append("productImage", file);
+    formData.append("thumbnail", file);
 
     try {
       const response = await axios.post("https://backend-my-api-ten.vercel.app/api/products/add", formData, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { 
+          "Authorization": `Bearer ${token}` 
+        },
       });
 
       if (response.data) {
@@ -83,13 +85,18 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
         setProductForm({ title: "", description: "", price: "", category: "", phone: "", file: null, previewUrl: null });
       }
     } catch (err) {
-      console.error(err);
+      console.error("Full Error:", err);
+      
+      // Exact error message nikalne ke liye
+      const errorMessage = err.response?.data?.message || err.message || "Timeout Issue!";
+      
       Swal.fire({
-        title: "❌ Failed to Add!",
-        text: err.response?.data?.message || "Something went wrong while uploading to Cloudinary!",
+        title: "❌ Exact Backend Error!",
+        text: errorMessage, // Yeh hamein batayega ke asal dhabba kahan hai
         icon: "error",
         background: "#1e293b", color: "#fff", confirmButtonColor: "#ef4444"
       });
+      
     } finally {
       setUploading(false);
     }
@@ -107,7 +114,7 @@ export default function SellProductModal({ showSellModal, setShowSellModal, dark
         </button>
 
         <h2 className="text-2xl font-black text-center mb-1 tracking-tight">Sell Your Item 🚀</h2>
-        <p className="text-center text-xs text-gray-400 mb-4">Enter product details to upload on MongoDB Database.</p>
+        <p className="text-center text-xs text-gray-400 mb-4">Enter product details</p>
 
         <form onSubmit={handleCreateProduct} className="space-y-3.5">
           {/* Image Picker */}
