@@ -84,14 +84,14 @@ export default function PricingPage() {
                 return;
             }
 
-            Swal.fire({
-                title: "Processing...",
-                text: "Connecting with our secure payment gateway",
-                allowOutsideClick: false,
-                background: "#1e1e1e",
-                color: "#fff",
-                didOpen: () => Swal.showLoading()
-            });
+            // Swal.fire({
+            //     title: "Processing...",
+            //     text: "Connecting with our secure payment gateway",
+            //     allowOutsideClick: false,
+            //     background: "#1e1e1e",
+            //     color: "#fff",
+            //     didOpen: () => Swal.showLoading()
+            // });
 
             const response = await axios.post(
                 "https://backend-my-api-ten.vercel.app/api/payment/create-checkout-session",
@@ -103,11 +103,18 @@ export default function PricingPage() {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             );
-            // Hum ek temporary anchor tag banayenge jo history stack ko kharab kiye bina redirect karega
             if (response.data && response.data.url) {
                 Swal.close();
                 if (typeof window !== "undefined") {
-                    window.location.assign(response.data.url);
+                    Swal.fire({
+    title: "Processing...",
+    text: "Connecting with our secure payment gateway",
+    allowOutsideClick: false,
+    background: "#1e1e1e",
+    color: "#fff",
+    didOpen: () => Swal.showLoading()
+});
+                    window.location.replace(response.data.url);
                 }
             } else {
                 Swal.fire("Error", "Session create nahi ho saka.", "error");
