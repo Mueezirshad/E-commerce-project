@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from 'next/image';
@@ -9,67 +9,98 @@ import Swal from "sweetalert2";
 export default function BoostPostPage() {
     const router = useRouter();
     const [myProducts, setMyProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    
+    const [loading, setLoading] = useState(true); 
+    const [darkMode, setDarkMode] = useState(true);
 
-    useEffect(() => {
-        const fetchMyProducts = async () => {
-            try {
-                const token = localStorage.getItem("token");
+    const fetchMyProducts = useCallback(async () => {
+        try {
+            const token = localStorage.getItem("token");
 
-                if (!token) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Access Denied",
-                        text: "Please login first to boost your ads!",
-                        background: "#1e1e1e",
-                        color: "#fff",
-                        confirmButtonColor: "#7c3aed"
-                    });
-                    router.push("/");
-                    return;
-                }
-
-                let currentUserId = null;
-                try {
-                    const base64Url = token.split(".")[1]; 
-                    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-                    const jsonPayload = decodeURIComponent(
-                        atob(base64)
-                            .split("")
-                            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-                            .join("")
-                    );
-
-                    const decoded = JSON.parse(jsonPayload);
-                    currentUserId = decoded.id || decoded._id || decoded.userId;
-                } catch (err) {
-                    console.error("Token decode karne mein error:", err);
-                }
-
-                // 3. Backend se saari products get karna
-                const response = await axios.get("https://backend-my-api-ten.vercel.app/api/products", {
-                    headers: { Authorization: `Bearer ${token}` }
+            if (!token) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Access Denied",
+                    text: "Please login first to boost your ads!",
+                    background: "#1e1e1e",
+                    color: "#fff",
+                    confirmButtonColor: "#7c3aed"
                 });
+                router.push("/");
+                return;
+            }
 
-                const allProducts = response.data.products || response.data;
+            let currentUserId = null;
+            try {
+                const base64Url = token.split(".")[1]; 
+                const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+                const jsonPayload = decodeURIComponent(
+                    atob(base64)
+                        .split("")
+                        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                        .join("")
+                );
 
-                // 4. Token se nikli hui MongoDB ID aur product ki userId match karke filter karna
-                if (currentUserId) {
-                    const filtered = allProducts.filter(prod => prod.userId === currentUserId);
-                    setMyProducts(filtered);
-                } else {
-                    setMyProducts([]);
-                }
+                const decoded = JSON.parse(jsonPayload);
+                currentUserId = decoded.id || decoded._id || decoded.userId;
+            } catch (err) {
+                console.error("Token decode karne mein error:", err);
+            }
 
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching ads:", error);
-                setLoading(false);
+            const response = await axios.get("https://backend-my-api-ten.vercel.app/api/products", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const allProducts = response.data.products || response.data;
+
+            if (currentUserId) {
+                const filtered = allProducts.filter(prod => prod.userId === currentUserId);
+                setMyProducts(filtered);
+            } else {
+                setMyProducts([]);
+            }
+
+        } catch (error) {
+            console.error("Error fetching ads:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [router]);
+
+    // ⚡ FIX 2: ESLint compliance ke liye async self-invoking function use kiya call ke liye
+    useEffect(() => {
+        const syncTheme = () => {
+            const savedTheme = localStorage.getItem("darkMode");
+            const isDark = savedTheme !== null ? savedTheme === "true" : true;
+            setDarkMode(isDark);
+            if (isDark) {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
             }
         };
 
-        fetchMyProducts();
-    }, [router]);
+        syncTheme();
+
+        const loadData = async () => {
+            await fetchMyProducts();
+        };
+        
+        loadData();
+
+        const handlePageShow = async (e) => {
+            if (e.persisted) {
+                setLoading(true);
+                await fetchMyProducts();
+            }
+            syncTheme();
+        };
+
+        window.addEventListener("pageshow", handlePageShow);
+        return () => {
+            window.removeEventListener("pageshow", handlePageShow);
+        };
+    }, [fetchMyProducts]);
 
     const handleSelectPost = (productId) => {
         localStorage.setItem("boost_product_id", productId);
@@ -78,35 +109,38 @@ export default function BoostPostPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#121212] flex items-center justify-center text-white font-bold text-lg">
-                Loading your ads...
+            <div className={`min-h-screen flex items-center justify-center font-bold text-lg transition-colors duration-300 ${darkMode ? "bg-slate-900 text-white" : "bg-gray-50 text-slate-800"}`}>
+                <div className="flex flex-col items-center gap-2">
+                    <span className="animate-spin h-6 w-6 border-2 border-purple-500 border-t-transparent rounded-full"></span>
+                    Loading your ads...
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#121212] text-white p-8">
-            <div className="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
+        <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "bg-slate-900 text-slate-100" : "bg-gray-50 text-slate-800"} p-4 md:p-8`}>
+            <div className={`flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8 border-b pb-4 ${darkMode ? "border-slate-800" : "border-purple-200"}`}>
                 <div>
-                    <h1 className="text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-indigo-400">
+                    <h1 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-linear-to-r from-purple-400 to-indigo-400">
                         🚀 SELECT AN AD TO BOOST
                     </h1>
-                    <p className="text-zinc-400 text-sm mt-1">Apni un posts ko select karein jise aap premium banana chahte hain.</p>
+                    <p className={`text-xs md:text-sm mt-1 ${darkMode ? "text-zinc-400" : "text-gray-500"}`}>Apni un posts ko select karein jise aap premium banana chahte hain.</p>
                 </div>
                 <button
                     onClick={() => router.push("/")}
-                    className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-xs font-bold uppercase transition-all"
+                    className={`w-full sm:w-auto text-center px-4 py-2.5 rounded-lg text-xs font-bold uppercase transition-all ${darkMode ? "bg-slate-800 hover:bg-slate-700 text-white" : "bg-purple-100 hover:bg-purple-200 text-purple-900"}`}
                 >
                     ⬅ Back to Home
                 </button>
             </div>
 
             {myProducts.length === 0 ? (
-                <div className="text-center py-20 border border-dashed border-zinc-800 rounded-2xl bg-[#1e1e1e]/50">
-                    <p className="text-zinc-500 text-lg">Aapne abhi tak koi ad post nahi kiya hai!</p>
+                <div className={`text-center py-20 border border-dashed rounded-2xl ${darkMode ? "border-slate-800 bg-slate-800/50" : "border-purple-200 bg-white"}`}>
+                    <p className={`text-lg ${darkMode ? "text-zinc-500" : "text-gray-500"}`}>Aapne abhi tak koi ad post nahi kiya hai!</p>
                     <button
                         onClick={() => router.push("/")}
-                        className="mt-4 px-5 py-2 bg-purple-600 rounded-lg font-bold text-sm hover:bg-purple-700"
+                        className="mt-4 px-5 py-2 bg-purple-600 rounded-lg font-bold text-sm hover:bg-purple-700 text-white"
                     >
                         Post an Item Now
                     </button>
@@ -117,9 +151,9 @@ export default function BoostPostPage() {
                         <div
                             key={product._id}
                             onClick={() => handleSelectPost(product._id)}
-                            className="group relative border border-zinc-800 bg-[#1e1e1e] rounded-xl overflow-hidden cursor-pointer hover:border-purple-500 shadow-md hover:shadow-[0_0_20px_rgba(124,58,237,0.2)] transition-all duration-300 transform hover:-translate-y-1"
+                            className={`group relative border rounded-xl overflow-hidden cursor-pointer shadow-md transition-all duration-300 transform hover:-translate-y-1 ${darkMode ? "border-slate-800 bg-slate-800 hover:border-purple-500 hover:shadow-[0_0_20px_rgba(124,58,237,0.2)]" : "border-purple-200 bg-white hover:border-purple-600 hover:shadow-[0_0_20px_rgba(124,58,237,0.15)]"}`}
                         >
-                            <div className="h-44 w-full relative bg-zinc-900">
+                            <div className={`h-44 w-full relative ${darkMode ? "bg-slate-900" : "bg-purple-50/30"}`}>
                                 <Image
                                     src={product.thumbnail || product.imageUrl}
                                     alt={product.title || "Product Image"}
@@ -135,7 +169,7 @@ export default function BoostPostPage() {
                             </div>
 
                             <div className="p-4">
-                                <h3 className="font-bold text-sm line-clamp-1 group-hover:text-purple-400 transition-colors">
+                                <h3 className={`font-bold text-sm line-clamp-1 transition-colors ${darkMode ? "text-slate-100 group-hover:text-purple-400" : "text-slate-800 group-hover:text-purple-700"}`}>
                                     {product.title}
                                 </h3>
                                 <p className="text-purple-500 font-black text-base mt-1">

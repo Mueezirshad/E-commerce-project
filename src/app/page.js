@@ -135,31 +135,31 @@ export default function Home() {
 
       {/* NAVBAR HEADER */}
       <header className={`border-b sticky top-0 z-50 shadow-sm px-4 py-3 transition-colors duration-300 ${darkMode ? "bg-slate-900/90 border-slate-800 backdrop-blur" : "bg-purple-50/95 border-purple-200 backdrop-blur"}`}>
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto flex flex-wrap md:flex-nowrap items-center justify-between gap-3 md:gap-4">
 
-          <div className="flex items-center shrink-0 z-10 pointer-events-none">
-            <div className="relative h-14 w-60 md:h-20 md:w-72 -my-3 -ml-2 md:-ml-20 overflow-visible">
+          <div className="flex items-center shrink-0 z-10 pointer-events-none order-1">
+            <div className="relative h-10 w-36 sm:h-12 sm:w-48 md:h-20 md:w-72 -my-3 -ml-10 md:-ml-25 overflow-visible">
               <Image src="/logo.svg" alt="VanishMart Logo" fill priority className="object-contain object-left scale-[5.9] origin-left cursor-default" />
             </div>
           </div>
 
-          <div className="flex-1 max-w-2xl pl-6 md:pl-12 my-4 mx-2 md:mx-6 z-20 relative">
+          <div className="w-full md:w-auto md:flex-1 order-3 md:order-2 pl-0 md:pl-26 my-1 md:my-5 mx-0 md:mx-6 z-20 relative">
             <div className={`relative flex items-center border-2 rounded-xl overflow-hidden transition-all ${darkMode ? "border-slate-700 bg-slate-800 focus-within:border-purple-500 shadow-inner" : "border-purple-200 bg-white focus-within:border-purple-600"}`}>
               <input
                 type="text" placeholder="Find Cars, Mobile Phones and more..."
                 value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full px-5 py-3.5 text-sm focus:outline-none bg-transparent transition-colors ${darkMode ? "text-white placeholder-slate-400" : "text-gray-800 placeholder-gray-400"}`}
+                className={`w-full px-4 py-2.5 md:px-5 md:py-3.5 text-xs md:text-sm focus:outline-none bg-transparent transition-colors ${darkMode ? "text-white placeholder-slate-400" : "text-gray-800 placeholder-gray-400"}`}
               />
-              <button className={`px-5 py-3.5 font-bold text-sm transition-colors shrink-0 ${darkMode ? "bg-purple-600 text-white hover:bg-purple-500" : "bg-purple-900 text-white hover:bg-purple-800"}`}>
+              <button className={`px-4 py-2.5 md:px-5 md:py-3.5 font-bold text-xs md:text-sm transition-colors shrink-0 ${darkMode ? "bg-purple-600 text-white hover:bg-purple-500" : "bg-purple-900 text-white hover:bg-purple-800"}`}>
                 Search
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 shrink-0 z-20 relative">
+          <div className="flex items-center gap-2 md:gap-4 shrink-0 z-20 relative order-2 md:order-3">
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-full transition-all text-lg border ${darkMode ? "bg-slate-800 border-slate-700 text-yellow-400 hover:bg-slate-700" : "bg-purple-100 border-purple-200 text-purple-900 hover:bg-purple-200"}`}
+              className={`p-1.5 md:p-2 rounded-full transition-all text-sm md:text-lg border ${darkMode ? "bg-slate-800 border-slate-700 text-yellow-400 hover:bg-slate-700" : "bg-purple-100 border-purple-200 text-purple-900 hover:bg-purple-200"}`}
             >
               {darkMode ? "☀️" : "🌙"}
             </button>
@@ -168,33 +168,33 @@ export default function Home() {
               <div className="relative" ref={profileMenuRef}>
                 <div
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className={`flex items-center gap-2 cursor-pointer p-1.5 rounded-full transition-all select-none ${darkMode ? "hover:bg-slate-800" : "hover:bg-purple-100"}`}
+                  className={`flex items-center gap-2 cursor-pointer p-1 rounded-full transition-all select-none ${darkMode ? "hover:bg-slate-800" : "hover:bg-purple-100"}`}
                 >
                   {user.profilePic ? (
-                    <Image src={user.profilePic || "/default-avatar.png"} alt="profile" width={36} height={36} unoptimized className="rounded-full object-cover border-2 border-purple-500" />
+                    <Image src={user.profilePic || "/default-avatar.png"} alt="profile" width={28} height={28} unoptimized className="rounded-full object-cover border-2 border-purple-500 md:w-9 md:h-9" />
                   ) : (
-                    <div className="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold uppercase">
+                    <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs md:text-sm font-bold uppercase">
                       {user.name?.charAt(0)}
                     </div>
                   )}
-                  <span className="text-xs font-bold hidden sm:inline-block max-w-20 truncate">{user.name}</span>
+                  <span className="text-[10px] md:text-xs font-bold hidden sm:inline-block max-w-20 truncate">{user.name}</span>
                 </div>
 
                 {showProfileMenu && (
-                  <div className={`absolute right-0 mt-3 w-64 rounded-xl shadow-xl border py-3 z-50 ${darkMode ? "bg-slate-800 border-slate-700 text-white" : "bg-white border-purple-100 text-slate-800"}`}>
+                  <div className={`absolute right-0 mt-3 w-56 md:w-64 rounded-xl shadow-xl border py-2 md:py-3 z-50 ${darkMode ? "bg-slate-800 border-slate-700 text-white" : "bg-white border-purple-100 text-slate-800"}`}>
                     <div className="px-4 py-3 border-b border-gray-100/10 flex flex-col items-center text-center">
                       {user.profilePic ? (
-                        <Image src={user.profilePic || "/default-avatar.png"} alt="profile" width={64} height={64} unoptimized className="rounded-full object-cover mb-2 border-2 border-purple-500" />
+                        <Image src={user.profilePic || "/default-avatar.png"} alt="profile" width={48} height={48} unoptimized className="rounded-full object-cover mb-2 border-2 border-purple-500 md:w-16 md:h-16" />
                       ) : (
-                        <div className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center text-white font-black text-2xl uppercase mb-2">
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-purple-600 flex items-center justify-center text-white font-black text-xl md:text-2xl uppercase mb-2">
                           {user.name?.charAt(0)}
                         </div>
                       )}
-                      <p className="font-bold text-sm">{user.name}</p>
-                      <p className="text-xs text-gray-400 truncate w-full">{user.email}</p>
+                      <p className="font-bold text-xs md:text-sm">{user.name}</p>
+                      <p className="text-[10px] md:text-xs text-gray-400 truncate w-full">{user.email}</p>
                     </div>
-                    <div className="p-2">
-                      <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-500 font-semibold hover:bg-red-50/50 rounded-lg flex items-center gap-2">
+                    <div className="p-1 md:p-2">
+                      <button onClick={handleLogout} className="w-full text-left px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-red-500 font-semibold hover:bg-red-50/50 rounded-lg flex items-center gap-2">
                         🚪 Log Out
                       </button>
                     </div>
@@ -202,7 +202,7 @@ export default function Home() {
                 )}
               </div>
             ) : (
-              <button onClick={() => setShowLogin(true)} className={`font-bold text-sm underline ${darkMode ? "text-purple-300" : "text-purple-900"}`}>
+              <button onClick={() => setShowLogin(true)} className={`font-bold text-xs md:text-sm underline ${darkMode ? "text-purple-300" : "text-purple-900"}`}>
                 Login
               </button>
             )}
@@ -222,9 +222,9 @@ export default function Home() {
                   setShowSellModal(true);
                 }
               }}
-              className="relative inline-flex items-center justify-center font-extrabold px-6 py-2 rounded-xl text-white bg-linear-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 shadow-md text-xs uppercase tracking-wider group transform active:scale-95 transition-all"
+              className="relative inline-flex items-center justify-center font-extrabold px-4 py-2 md:px-6 md:py-2.5 rounded-xl text-white bg-linear-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 shadow-md text-[10px] md:text-xs uppercase tracking-wider group transform active:scale-95 transition-all"
             >
-              <span className="mr-1.5 text-base font-black transform group-hover:rotate-90 transition-transform duration-200">+</span>
+              <span className="mr-1 md:mr-1.5 text-xs md:text-base font-black transform group-hover:rotate-90 transition-transform duration-200">+</span>
               Sell
             </button>
           </div>
@@ -250,11 +250,9 @@ export default function Home() {
     animate-[premium-shake_4s_infinite_ease-in-out]
   `}
             >
-              {/* Premium Border Glow Effect */}
               <span className="absolute inset-0 w-full h-full rounded-xl bg-linear-to-r from-purple-400 to-indigo-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-sm"></span>
 
               <span className="relative flex items-center gap-1">🚀 Boost Your Ad
-                {/* {showOnlyMyAds ? "⬅ Show All Ads" : "🚀 Boost Your Ad"} */}
               </span>
             </button>
 
@@ -307,7 +305,6 @@ export default function Home() {
 
       <Footer darkMode={darkMode} />
 
-      {/* 👑 CALLING EXTERNAL DB MODALS PROPERLY */}
       <LoginRegisterModal
         showLogin={showLogin} setShowLogin={setShowLogin}
         isSignup={isSignup} setisSignup={setisSignup}

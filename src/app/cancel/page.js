@@ -1,33 +1,39 @@
 "use client";
+import { useSearchParams, useRouter } from "next/navigation";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Swal from "sweetalert2";
-
-export default function CancelPage() {
+export default function PaymentCancel() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-
-  useEffect(() => {
-    Swal.fire({
-      icon: "warning",
-      title: "Payment Canceled",
-      text: "Your transaction was canceled. No money was charged.",
-      background: "#1e1e1e",
-      color: "#fff",
-      confirmButtonColor: "#ff3333"
-    });
-  }, []);
+  const plan = searchParams.get("plan");
 
   return (
-    <div style={{ minHeight: "100vh", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", color: "#fff", background: "#121212", padding: "20px" }}>
-      <h1 style={{ color: "#ff3333", fontSize: "2.5rem", marginBottom: "15px" }}>❌ Transaction Canceled</h1>
-      <p style={{ color: "#aaa", marginBottom: "30px", fontSize: "1.1rem" }}>You can try purchasing again whenever you are ready.</p>
-      <button 
-        onClick={() => router.push("/pricing")} 
-        style={{ color: "#fff", background: "#333", border: "1px solid #444", padding: "12px 25px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
-      >
-        Back to Pricing Plans
-      </button>
+    <div style={{ backgroundColor: "#121212", color: "#fff", height: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", fontFamily: "sans-serif", padding: "20px", textAlign: "center" }}>
+      <div style={{ fontSize: "4rem", marginBottom: "10px" }}>❌</div>
+      <h1 style={{ color: "#ef4444", fontWeight: "900", transform: "uppercase" }}>Payment Cancelled!</h1>
+      <p style={{ fontSize: "1.1rem", marginTop: "10px", color: "#a1a1aa", maxWidth: "400px" }}>
+        You have canceled your <strong style={{ color: "#f43f5e", textTransform: "uppercase" }}>{plan || "Premium"}</strong> plan payment. No charges have been made.
+
+      </p>
+      
+      <div style={{ display: "flex", gap: "15px", marginTop: "30px" }}>
+        <button 
+          onClick={() => router.push("/pricing")}
+          style={{ padding: "12px 24px", backgroundColor: "#3f3f46", color: "#fff", borderRadius: "8px", border: "none", fontWeight: "bold", cursor: "pointer", transition: "all 0.2s" }}
+          onMouseOver={(e) => e.target.style.backgroundColor = "#52525b"}
+          onMouseOut={(e) => e.target.style.backgroundColor = "#3f3f46"}
+        >
+          🔄 Try Again
+        </button>
+        
+        <button 
+          onClick={() => router.push("/boostpost")}
+          style={{ padding: "12px 24px", backgroundColor: "#7c3aed", color: "#fff", borderRadius: "8px", border: "none", fontWeight: "bold", cursor: "pointer", transition: "all 0.2s" }}
+          onMouseOver={(e) => e.target.style.backgroundColor = "#6d28d9"}
+          onMouseOut={(e) => e.target.style.backgroundColor = "#7c3aed"}
+        >
+          📋 My Ads
+        </button>
+      </div>
     </div>
   );
 }
